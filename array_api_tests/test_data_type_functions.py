@@ -215,3 +215,31 @@ def test_isdtype(dtype, kind):
 def test_result_type(dtypes):
     out = xp.result_type(*dtypes)
     ph.assert_dtype("result_type", in_dtype=dtypes, out_dtype=out, repr_name="out")
+
+@pytest.mark.parametrize("dtype_str, expected_dtype", [
+    ("float16", ivy.float16),
+    ("float32", ivy.float32),
+    ("float64", ivy.float64),
+    ("int8", ivy.int8),
+    ("int16", ivy.int16),
+    ("int32", ivy.int32),
+    ("int64", ivy.int64),
+    ("uint8", ivy.uint8),
+    ("uint16", ivy.uint16),
+    ("uint32", ivy.uint32),
+    ("uint64", ivy.uint64),
+    ("bool", ivy.bool),
+])
+def test_dtype_from_str(dtype_str, expected_dtype):
+    dtype = dtype_from_str(dtype_str)
+    assert dtype == expected_dtype
+
+@pytest.mark.parametrize("invalid_dtype_str", [
+    "float24",  # Invalid float type
+    "int129",   # Invalid int type
+    "boolean",  # Invalid boolean type
+    "complex64" # Unsupported complex type
+])
+def test_dtype_from_str(invalid_dtype_str):
+    with pytest.raises(ValueError):
+        dtype_from_str(invalid_dtype_str)
